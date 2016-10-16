@@ -1,0 +1,14 @@
+{
+  "name": "trading",
+  "version": "1.0.0",
+  "description": "CoinBase Exchange Trading System",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Robert Rice",
+  "license": "ISC",
+  "dependencies": {
+    "gdax": "^0.2.1"
+  }
+}
