@@ -9,6 +9,7 @@
   "author": "Robert Rice",
   "license": "ISC",
   "dependencies": {
-    "gdax": "^0.2.1"
+    "gdax": "^0.2.1",
+    "promise": "^7.1.1"
   }
 }
