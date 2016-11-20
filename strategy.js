@@ -22,17 +22,28 @@ var tradeDirection = function(client,publicClient){
   })
 };
 
-var _movingAvg = function(params){
-  var params = {'granularity': 3000};
+var _movingAvg = function(publicClient,params){
   return new Promise(function(resolve,reject){
     return publicClient.getProductHistoricRates(params, function(err,response, data){
-        console.log("HISTORICAL data", data);
-        return resolve();
+      //console.log("err!",err);
+      var points = data.map(function(item){
+        item[0] = new Date(parseInt(item[0].toString() + "000"));
+        return item;
+      })
+      //console.log("points",points);
+       points = points.reduce(function(a, b) {
+      return a.concat(b[1]).concat(b[2]);
+    }, []);
+    avg = points.reduce(function(a,b){return a+b})/points.length;
+    //console.log("Moving AVG", avg);
+    console.log("Length:",points.length);
+        return resolve(avg);
     })
   });
 }
 
 
 module.exports = {
-  tradeDirection: tradeDirection
+  tradeDirection: tradeDirection,
+  movingAvg: _movingAvg
 };
