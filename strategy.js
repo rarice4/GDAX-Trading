@@ -22,10 +22,17 @@ var tradeDirection = function(client,publicClient){
   })
 };
 
-var _movingAvg = function(publicClient,params){
+var _movingAvg = function(publicClient,days){
+  var today = new Date();
+  var dataPoints = (86400 * days)/24; //25 data points
+  var params = {
+    'end': today.toISOString(),
+    'start': new Date(today.getTime() - days*24*60*60*1000).toISOString(),
+    'granularity': dataPoints //
+  };
   return new Promise(function(resolve,reject){
     return publicClient.getProductHistoricRates(params, function(err,response, data){
-      //console.log("err!",err);
+      // console.log("err!",err);
       var points = data.map(function(item){
         item[0] = new Date(parseInt(item[0].toString() + "000"));
         return item;

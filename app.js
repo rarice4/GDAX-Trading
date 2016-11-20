@@ -13,21 +13,15 @@ var callback = function(err, response, data) {
 // strategy.tradeDirection(authedClient, publicClient).then(function(direction){
 //   console.log("Direction", direction);
 // });
-var today = new Date();
-var days = 1;
-var params = {
-  'end': today.toISOString(),
-  'start': new Date(today.getTime() - days*24*60*60*1000).toISOString(),
-  'granularity': 3600 //
-}
-strategy.movingAvg(publicClient, params).then(function(avg){
-console.log("24 hour",avg);
-var params2 = {
-  'end': today.toISOString(),
-  'start': new Date(today.getTime() - days*24*60*60*1000*.5).toISOString(),
-  'granularity': 1800 //
-}
-  strategy.movingAvg(publicClient, params2).then(function(avg2){
-  console.log("12 hour",avg2);
+
+strategy.movingAvg(publicClient, 1).then(function(longAvg){
+console.log("24 hour",longAvg);
+  strategy.movingAvg(publicClient, .5).then(function(shortAvg){
+  console.log("12 hour",shortAvg);
+  if(shortAvg < longAvg){
+    //sell
+  }else{
+    //buy
+  }
   });
 })
