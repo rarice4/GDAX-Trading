@@ -14,19 +14,21 @@ var callback = function(err, response, data) {
 //   console.log("Direction", direction);
 // });
 
-accounts.sellBTC(authedClient, publicClient);
+//accounts.sellBTC(authedClient, publicClient);
+//accounts.buyBTC(authedClient, publicClient);
+//authedClient.cancelOrder("dc79ddbb-3e20-44f2-996e-c29cd7a893e1", callback);
 
-// strategy.movingAvg(publicClient, 1).then(function(longAvg){
-// console.log("24 hour",longAvg);
-//   strategy.movingAvg(publicClient, .5).then(function(shortAvg){
-//   console.log("12 hour",shortAvg);
-//   if(shortAvg < longAvg){
-//     //sell
-//     console.log("sell");
-//     accounts.sellBTC(authedClient);
-//   }else{
-//     //buy
-//     console.log("buy");
-//   }
-//   });
-// })
+strategy.movingAvg(publicClient, 1).then(function(longAvg){
+console.log("24 hour",longAvg);
+  strategy.movingAvg(publicClient, .5).then(function(shortAvg){
+  console.log("12 hour",shortAvg);
+  if(shortAvg < longAvg){
+    //sell
+    console.log("sell");
+    //accounts.sellBTC(authedClient);
+  }else{
+    //buy
+    console.log("buy");
+  }
+  });
+})
