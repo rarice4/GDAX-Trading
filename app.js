@@ -10,25 +10,38 @@ var callback = function(err, response, data) {
   console.log(response.body);
 };
 
-// strategy.tradeDirection(authedClient, publicClient).then(function(direction){
-//   console.log("Direction", direction);
-// });
+strategy.tradeDirection(authedClient, publicClient).then(function(direction){
+  console.log("Direction", direction);
+  marketAction(direction).then(function(action){
+    console.log("ACTION",action);
+  })
+});
 
 //accounts.sellBTC(authedClient, publicClient);
 //accounts.buyBTC(authedClient, publicClient);
-//authedClient.cancelOrder("dc79ddbb-3e20-44f2-996e-c29cd7a893e1", callback);
-
-strategy.movingAvg(publicClient, 1).then(function(longAvg){
-console.log("24 hour",longAvg);
-  strategy.movingAvg(publicClient, .5).then(function(shortAvg){
-  console.log("12 hour",shortAvg);
-  if(shortAvg < longAvg){
-    //sell
-    console.log("sell");
-    //accounts.sellBTC(authedClient);
-  }else{
-    //buy
-    console.log("buy");
-  }
-  });
-})
+//authedClient.cancelOrder(id, callback);
+function marketAction(direction){
+  return strategy.movingAvg(publicClient, 1).then(function(longAvg){
+  console.log("24 hour",longAvg);
+    return strategy.movingAvg(publicClient, .5).then(function(shortAvg){
+    console.log("12 hour",shortAvg);
+    if(shortAvg < longAvg){
+      //if holding btc sell
+      if(direction === "USD"){
+        return "sell";
+      }else{
+        //already in usd. hold usd while market continues to fall
+        return "hold";
+      }
+    }else{
+      if(direction !== "USD"){
+        //buy btc market is rising
+        return "buy";
+      }else{
+        //already holding btc in rising market: hold btc
+        return "hold";
+      }
+    }
+    });
+  })
+}
