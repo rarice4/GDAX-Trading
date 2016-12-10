@@ -31,8 +31,8 @@ var _movingAvg = function(publicClient,days){
     'granularity': dataPoints //
   };
   return new Promise(function(resolve,reject){
-    return publicClient.getProductHistoricRates(params, function(err,response, data){
-      // console.log("err!",err);
+    publicClient.getProductHistoricRates(params, function(err,response, data){
+      if(data.message) console.log("err!", data.message);
       var points = data.map(function(item){
         item[0] = new Date(parseInt(item[0].toString() + "000"));
         return item;

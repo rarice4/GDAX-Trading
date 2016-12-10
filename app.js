@@ -10,15 +10,31 @@ var callback = function(err, response, data) {
   console.log(response.body);
 };
 
-strategy.tradeDirection(authedClient, publicClient).then(function(direction){
-  console.log("Direction", direction);
-  marketAction(direction).then(function(action){
-    console.log("ACTION",action);
-  })
-});
+function tradeCycle(){
+  strategy.tradeDirection(authedClient, publicClient).then(function(direction){
+    console.log("Direction", direction);
+    marketAction(direction).then(function(action){
+      console.log("ACTION",action);
+      switch (action) {
+        case "buy":
+          accounts.buyBTC(authedClient, publicClient).then(function(order){
+            newTradeCycle();
+          });
+          break;
+        case "sell":
+        accounts.sellBTC(authedClient, publicClient).then(function(order){
+          newTradeCycle();
+        });
+          break;
+        case "hold":
+          newTradeCycle();
+          break;
+      }
+    })
+  });
+}
 
-//accounts.sellBTC(authedClient, publicClient);
-//accounts.buyBTC(authedClient, publicClient);
+
 //authedClient.cancelOrder(id, callback);
 function marketAction(direction){
   return strategy.movingAvg(publicClient, 1).then(function(longAvg){
@@ -45,3 +61,9 @@ function marketAction(direction){
     });
   })
 }
+function newTradeCycle(){
+  // start new tradeCycle after 5 minutes
+  setTimeout(function(){tradeCycle()},300000);
+}
+//start first trade cycle
+tradeCycle()
