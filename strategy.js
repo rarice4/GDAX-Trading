@@ -49,7 +49,6 @@ var _movingAvg = function(publicClient,days){
   });
 }
 
-
 module.exports = {
   tradeDirection: tradeDirection,
   movingAvg: _movingAvg

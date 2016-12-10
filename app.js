@@ -14,14 +14,19 @@ var callback = function(err, response, data) {
 //   console.log("Direction", direction);
 // });
 
-strategy.movingAvg(publicClient, 1).then(function(longAvg){
-console.log("24 hour",longAvg);
-  strategy.movingAvg(publicClient, .5).then(function(shortAvg){
-  console.log("12 hour",shortAvg);
-  if(shortAvg < longAvg){
-    //sell
-  }else{
-    //buy
-  }
-  });
-})
+accounts.sellBTC(authedClient, publicClient);
+
+// strategy.movingAvg(publicClient, 1).then(function(longAvg){
+// console.log("24 hour",longAvg);
+//   strategy.movingAvg(publicClient, .5).then(function(shortAvg){
+//   console.log("12 hour",shortAvg);
+//   if(shortAvg < longAvg){
+//     //sell
+//     console.log("sell");
+//     accounts.sellBTC(authedClient);
+//   }else{
+//     //buy
+//     console.log("buy");
+//   }
+//   });
+// })
