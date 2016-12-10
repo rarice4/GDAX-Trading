@@ -1,5 +1,6 @@
 var accounts = require('./accounts.js');
 var market = require('./marketData.js');
+var chalk = require('chalk');
 // returns direction money needs to move
 var tradeDirection = function(client,publicClient){
   return new Promise(function(resolve,reject){
@@ -32,7 +33,7 @@ var _movingAvg = function(publicClient,days){
   };
   return new Promise(function(resolve,reject){
     publicClient.getProductHistoricRates(params, function(err,response, data){
-      if(data.message) console.log("err!", data.message);
+      if(data.message) console.log(chalk.red(data.message));
       var points = data.map(function(item){
         item[0] = new Date(parseInt(item[0].toString() + "000"));
         return item;
