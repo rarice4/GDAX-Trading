@@ -32,21 +32,23 @@ var _movingAvg = function(publicClient,days){
     'granularity': dataPoints //
   };
   return new Promise(function(resolve,reject){
-    publicClient.getProductHistoricRates(params, function(err,response, data){
-      if(data.message) console.log(chalk.red(data.message));
-      var points = data.map(function(item){
-        item[0] = new Date(parseInt(item[0].toString() + "000"));
-        return item;
+    setTimeout(function(){
+      publicClient.getProductHistoricRates(params, function(err,response, data){
+        if(data.message) console.log(chalk.red(data.message));
+        var points = data.map(function(item){
+          item[0] = new Date(parseInt(item[0].toString() + "000"));
+          return item;
+        })
+        //console.log("points",points);
+         points = points.reduce(function(a, b) {
+        return a.concat(b[1]).concat(b[2]);
+      }, []);
+      avg = points.reduce(function(a,b){return a+b})/points.length;
+      //console.log("Moving AVG", avg);
+      console.log("Length:",points.length);
+          return resolve(avg);
       })
-      //console.log("points",points);
-       points = points.reduce(function(a, b) {
-      return a.concat(b[1]).concat(b[2]);
-    }, []);
-    avg = points.reduce(function(a,b){return a+b})/points.length;
-    //console.log("Moving AVG", avg);
-    console.log("Length:",points.length);
-        return resolve(avg);
-    })
+    },2000);
   });
 }
 

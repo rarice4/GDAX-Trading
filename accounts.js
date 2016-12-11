@@ -1,25 +1,30 @@
 var Promise = require('promise');
 var market = require('./marketData.js');
+var chalk = require('chalk');
 var _holdings = function(client){
   return new Promise(function(resolve, reject){
-    client.getAccounts(function(err, response, data) {
-      //console.log(JSON.parse(response.body));
-      var accounts = {};
+    //delay get by 2 sets so trade cycle does not exceed limit of 4 calls per second to gdax api
+    setTimeout(function(){
+      client.getAccounts(function(err, response, data) {
+        //console.log(JSON.parse(response.body));
+        var accounts = {};
+  if(data.message)console.log(chalk.red(data.message));
+        accounts.btc = JSON.parse(response.body).filter(function(account){
+          if(account.currency === "BTC"){
+            return account;
+          }
+        })[0];
 
-      accounts.btc = JSON.parse(response.body).filter(function(account){
-        if(account.currency === "BTC"){
-          return account;
-        }
-      })[0];
+        accounts.usd = JSON.parse(response.body).filter(function(account){
+          if(account.currency === "USD"){
+            return account;
+          }
+        })[0];
+        console.log("Accounts", accounts);
+        resolve(accounts);
+      });
+    },2000)
 
-      accounts.usd = JSON.parse(response.body).filter(function(account){
-        if(account.currency === "USD"){
-          return account;
-        }
-      })[0];
-      console.log("Accounts", accounts);
-      resolve(accounts);
-    });
   });
 };
 var _sellBTC = function(authedclient,publicClient){
@@ -67,7 +72,7 @@ var _buyBTC = function(authedclient,publicClient){
       var bidAskAvg = ((parseFloat(data.bids[0][0]) + parseFloat(data.asks[0][0]))/2).toFixed(2)
       console.log("bidAskAvg",bidAskAvg);
       //25 cent transaction fee
-      var sizeBTC = ((clearedUSD -.25)/bidAskAvg).toFixed(6);
+      var sizeBTC = ((clearedUSD -.5)/bidAskAvg).toFixed(6);
       console.log("sizeBTC",sizeBTC);
       var buyParams = {
         'price': bidAskAvg, // USD
