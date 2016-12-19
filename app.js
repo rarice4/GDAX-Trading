@@ -10,6 +10,8 @@ var callback = function(err, response, data) {
   console.log(response.body);
 };
 
+var openOrder = null;
+
 function tradeCycle(){
   strategy.tradeDirection(authedClient, publicClient).then(function(direction){
     console.log("Direction", direction);
@@ -18,11 +20,13 @@ function tradeCycle(){
       switch (action) {
         case "buy":
           accounts.buyBTC(authedClient, publicClient).then(function(order){
+            openOrder = order.id;
             newTradeCycle();
           });
           break;
         case "sell":
         accounts.sellBTC(authedClient, publicClient).then(function(order){
+          openOrder = order.id;
           newTradeCycle();
         });
           break;
@@ -37,33 +41,19 @@ function tradeCycle(){
 
 //authedClient.cancelOrder(id, callback);
 function marketAction(direction){
-  return strategy.movingAvg(publicClient, 1).then(function(longAvg){
-  console.log("24 hour",longAvg);
-    return strategy.movingAvg(publicClient, .5).then(function(shortAvg){
-    console.log("12 hour",shortAvg);
-    if(shortAvg < longAvg){
-      //if holding btc sell
-      if(direction === "USD"){
-        return "sell";
-      }else{
-        //already in usd. hold usd while market continues to fall
-        return "hold";
-      }
-    }else{
-      if(direction !== "USD"){
-        //buy btc market is rising
-        return "buy";
-      }else{
-        //already holding btc in rising market: hold btc
-        return "hold";
-      }
-    }
-    });
-  })
+  //1 day and 1/8 day moving average
+  return strategy.dualMovingAvgSignal(publicClient, direction, 1, .125)
 }
 function newTradeCycle(){
   // start new tradeCycle after 5 minutes
   setTimeout(function(){tradeCycle()},300000);
 }
+
 //start first trade cycle
 tradeCycle()
+
+// accounts.cancelOpenOrder(authedClient,openOrder).then(function(resp){
+//   console.log("$$",resp);
+// }).catch(function(err){
+//     console.log("Cancel order Err:",err);
+// })
