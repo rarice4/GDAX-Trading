@@ -23,7 +23,7 @@ var _holdings = function(client){
         console.log("Accounts", accounts);
         resolve(accounts);
       });
-    },500)
+    },1000)
 
   });
 };
@@ -57,7 +57,7 @@ var _sellBTC = function(authedclient,publicClient){
             reject(err);
           }
         });
-      },500);
+      },1000);
     });
     });
 

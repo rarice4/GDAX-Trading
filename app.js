@@ -42,7 +42,7 @@ function tradeCycle(){
 //authedClient.cancelOrder(id, callback);
 function marketAction(direction){
   //1 day and 1/8 day moving average
-  return strategy.dualMovingAvgSignal(publicClient, direction, 1, .125)
+  return strategy.dualMovingAvgSignal(publicClient, direction, .5, .125)
 }
 function newTradeCycle(){
   // start new tradeCycle after 5 minutes

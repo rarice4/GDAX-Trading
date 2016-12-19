@@ -49,7 +49,7 @@ var _movingAvg = function(publicClient,days){
       console.log("Length:",points.length);
           return resolve(avg);
       })
-    },500);
+    },1000);
   });
 }
 // trade signal based on moving average cross
